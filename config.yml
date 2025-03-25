@@ -1,0 +1,22 @@
+# Path to the GGUF model file.
+GGUF_MODEL_PATH: "/Users/gianlucadamiani/Desktop/mistral-7b-instruct-v0.2.Q2_K.gguf"
+
+# Parameters for your GGUF model.
+N_CTX: 2048         # Context length (max tokens the model can process).
+N_BATCH: 512        # Batch size for model inference.
+MAX_TOKENS: 512     # Maximum tokens to generate in a response.
+TEMPERATURE: 0.7    # Controls randomness in generation (lower is more deterministic).
+TOP_P: 0.9          # Controls nucleus sampling cutoff.
+
+# Embedding model configuration.
+EMBEDDINGS: "multi-qa-MiniLM-L6-cos-v1" # The name of the embedding model
+DEVICE: "cpu"                # Device for inference; use "cuda" if you have a GPU.
+NORMALIZE_EMBEDDINGS: true    # Whether to normalize embeddings to unit length.
+
+# Vector store (Chroma DB) configuration.
+VECTOR_DB: "vectorstore/sparrow"   # Directory where the vector store persists its data.
+COLLECTION_NAME: "pdf_chunks"       # Name of the collection for storing document chunks.
+VECTOR_SPACE: "cosine"              # Similarity metric (commonly "cosine").
+NUM_RESULTS: 3                      # Number of top results to retrieve for each query.
+CHUNK_SIZE: 100
+CHUNK_OVERLAP: 20
