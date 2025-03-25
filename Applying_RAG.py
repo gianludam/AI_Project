@@ -17,6 +17,8 @@ from llama_cpp import Llama
 # Custom LLM class wrapping your GGUF model
 #########################################
 class CustomGGUFXMLLM(LLM):
+    __private_attributes__ = {"_llm": None}  # Define a private attribute for the model
+    
     """
     Custom LLM class wrapping your GGUF model.
     Ensures the model follows the LangChain LLM interface.
@@ -34,12 +36,12 @@ class CustomGGUFXMLLM(LLM):
             top_p (float): Controls the nucleus sampling cutoff.
             **kwargs: Additional keyword arguments for the model.
         """
-        self.llm = Llama(
+        object.__setattr__(self, "_llm", Llama(
             model_path=model_path,
             n_ctx=n_ctx,
             n_batch=n_batch,
             **kwargs
-        )
+        ))
         self.max_tokens = max_tokens
         self.temperature = temperature
         self.top_p = top_p
@@ -62,7 +64,7 @@ class CustomGGUFXMLLM(LLM):
         Returns:
             str: The generated response text.
         """
-        output = self.llm(
+        output = self._llm(
             prompt,
             max_tokens=self.max_tokens,
             temperature=self.temperature,
