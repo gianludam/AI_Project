@@ -1,6 +1,7 @@
 import box
 from box import Box
 import yaml
+import PyPDF2
 
 import streamlit as st
 from dotenv import load_dotenv
