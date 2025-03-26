@@ -29,7 +29,7 @@ def split_text(doc_text, chunk_size, chunk_overlap):
     texts = text_splitter.create_documents(splits)
     print(f"Loaded {len(texts)} splits")
     # Each element in 'texts' is a Document object. We extract just the text.
-    return [doc.page_content for doc in texts]
+    return texts
 
 def ingest_documents(doc_text, cfg):
     """
