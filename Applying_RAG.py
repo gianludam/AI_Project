@@ -13,11 +13,18 @@ from langchain.chains import RetrievalQA
 from langchain.llms.base import LLM
 from llama_cpp import Llama
 
+from pydantic import PrivateAttr
+from langchain.llms.base import LLM
+from llama_cpp import Llama
+
 #########################################
 # Custom LLM class wrapping your GGUF model
 #########################################
 class CustomGGUFXMLLM(LLM):
-    __private_attributes__ = {"_llm": None}  # Define a private attribute for the model
+    _llm: Llama = PrivateAttr()
+    _max_tokens: int = PrivateAttr()
+    _temperature: float = PrivateAttr()
+    _top_p: float = PrivateAttr()
     
     """
     Custom LLM class wrapping your GGUF model.
@@ -36,15 +43,17 @@ class CustomGGUFXMLLM(LLM):
             top_p (float): Controls the nucleus sampling cutoff.
             **kwargs: Additional keyword arguments for the model.
         """
+        super().__init__()
+        
         object.__setattr__(self, "_llm", Llama(
             model_path=model_path,
             n_ctx=n_ctx,
             n_batch=n_batch,
             **kwargs
         ))
-        self.max_tokens = max_tokens
-        self.temperature = temperature
-        self.top_p = top_p
+        object.__setattr__(self, "_max_tokens", max_tokens)
+        object.__setattr__(self, "_temperature", temperature)
+        object.__setattr__(self, "_top_p", top_p)
 
     @property
     def _llm_type(self) -> str:
@@ -52,6 +61,19 @@ class CustomGGUFXMLLM(LLM):
         Return the type of LLM. This helps LangChain identify the model.
         """
         return "custom-gguf"
+
+    @property
+    def max_tokens(self) -> int:
+        return self._max_tokens
+
+    @property
+    def temperature(self) -> float:
+        return self._temperature
+
+    @property
+    def top_p(self) -> float:
+        return self._top_p
+
 
     def _call(self, prompt: str, stop=None) -> str:
         """
