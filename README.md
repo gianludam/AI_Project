@@ -149,6 +149,8 @@ In the chatbot interface, you can:
 -Use the sidebar to upload PDFs and ingest documents into the vector store
 
 ## Project Structure
+```graphql
+
 AI_Project/
 ├── Applying_RAG.py       # Contains the RAG pipeline code and custom GGUF LLM wrapper
 ├── App.py                # Streamlit app for the chatbot interface
