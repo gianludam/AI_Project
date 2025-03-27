@@ -165,7 +165,7 @@ AI_Project/
 ├── requirements.txt      # List of required Python packages
 ├── htmlTemplates.py      # Custom HTML/CSS templates for the Streamlit app
 ├── READEME.md
-└── LICENSE.md            # Apache License, Version 2.0
+└── LICENSE               # Apache License, Version 2.0
 ```
 
 
