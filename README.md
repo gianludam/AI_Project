@@ -103,6 +103,7 @@ NUM_RESULTS: 3
 # Chunking parameters for document ingestion
 CHUNK_SIZE: 100
 CHUNK_OVERLAP: 20
+```
 
 
 ## Usage
