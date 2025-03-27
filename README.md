@@ -148,6 +148,18 @@ In the chatbot interface, you can:
 -Enter a question to receive an answer
 -Use the sidebar to upload PDFs and ingest documents into the vector store
 
+## Project Structure
+AI_Project/
+├── Applying_RAG.py       # Contains the RAG pipeline code and custom GGUF LLM wrapper
+├── App.py                # Streamlit app for the chatbot interface
+├── ingest.py             # Script for ingesting document text into the vector store
+├── query_script.py       # Command-line script to query the RAG pipeline
+├── config.yml            # Configuration file with model, embedding, and vector store parameters
+├── requirements.txt      # List of required Python packages
+├── htmlTemplates.py      # Custom HTML/CSS templates for the Streamlit app
+└── README.md             # This file
+
+
 
 
 
