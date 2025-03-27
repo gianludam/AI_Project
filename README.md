@@ -160,7 +160,7 @@ AI_Project/
 ├── requirements.txt      # List of required Python packages
 ├── htmlTemplates.py      # Custom HTML/CSS templates for the Streamlit app
 └── README.md             # This file
-
+```
 
 
 
