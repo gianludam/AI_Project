@@ -54,3 +54,57 @@ In building this, I have closely followed the structure [here](https://medium.co
    ```bash
    git clone https://github.com/gianludam/AI_Project.git
    cd AI_Project
+
+2. **(Optional) Create and Activate a Virtual Environment:**
+   
+   ```bash
+   python -m venv venv
+   source venv/bin/activate
+
+3. **Install Dependencies:**
+   
+   ```bash
+   pip install -r requirements.txt
+
+This is a plain text file that lists all the Python packages your project depends on, often with specific version numbers. It allows you or anyone using this project to quickly install all necessary packages using a single command 
+
+**Deprecation Note:**
+You may see warnings about importing vector stores and embeddings from langchain. In the future, consider installing and importing from langchain-community instead.
+
+--
+
+## Configuration
+
+Create a config.yml file in the root of your repository. This is an example of mine (adjust paths and values as needed):
+
+```bash
+
+# Path to GGUF model file
+GGUF_MODEL_PATH: "/Users/gianlucadamiani/Desktop/mistral-7b-instruct-v0.2.Q2_K.gguf"
+
+# GGUF Model Parameters
+N_CTX: 2048
+N_BATCH: 512
+MAX_TOKENS: 512
+TEMPERATURE: 0.7
+TOP_P: 0.9
+
+# Embedding model configuration (from Hugging Face)
+EMBEDDINGS: "multi-qa-MiniLM-L6-cos-v1"
+DEVICE: "cpu"
+NORMALIZE_EMBEDDINGS: true
+
+# Vector store (Chroma DB) configuration
+VECTOR_DB: "vectorstore/sparrow"
+COLLECTION_NAME: "pdf_chunks"
+VECTOR_SPACE: "cosine"
+NUM_RESULTS: 3
+
+# Chunking parameters for document ingestion
+CHUNK_SIZE: 1000
+CHUNK_OVERLAP: 100
+
+
+
+
+
