@@ -148,6 +148,11 @@ In the chatbot interface, you can:
 -Enter a question to receive an answer
 -Use the sidebar to upload PDFs and ingest documents into the vector store
 
+## 
+
+This project is licensed under the Apache License, Version 2.0.  
+See the [LICENSE](LICENSE) file for details.
+
 ## Project Structure
 ```graphql
 
@@ -159,7 +164,8 @@ AI_Project/
 ├── config.yml            # Configuration file with model, embedding, and vector store parameters
 ├── requirements.txt      # List of required Python packages
 ├── htmlTemplates.py      # Custom HTML/CSS templates for the Streamlit app
-└── README.md             # This file
+├── READEME.md
+└── LICENSE.md            # Apache License, Version 2.0
 ```
 
 
