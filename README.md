@@ -101,8 +101,31 @@ VECTOR_SPACE: "cosine"
 NUM_RESULTS: 3
 
 # Chunking parameters for document ingestion
-CHUNK_SIZE: 1000
-CHUNK_OVERLAP: 100
+CHUNK_SIZE: 100
+CHUNK_OVERLAP: 20
+
+
+## Usage
+### Ingesting Documents
+
+To ingest documents (e.g., plain text files extracted from PDFs):
+
+1. **Prepare a Text File:**
+Ensure you have a text file (e.g., document.txt) containing the content you want to index.
+
+2. **Run the Ingestion Script:**
+
+```bash
+python ingest.py --doc_file /path/to/document.txt --config config.yml
+
+This script will:
+
+-Read the document text
+-Split it into chunks using LangChain's RecursiveCharacterTextSplitter.
+-Add the chunks to your Chroma vector store.
+-Persist the vector store to disk.
+
+
 
 
 
