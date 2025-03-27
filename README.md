@@ -145,8 +145,8 @@ Run the Streamlit app to interact with the pipeline using a web interface:
 python -m streamlit run App.py
 ```
 In the chatbot interface, you can:
--Enter a question to receive an answer
--Use the sidebar to upload PDFs and ingest documents into the vector store
+- Enter a question to receive an answer
+- Use the sidebar to upload PDFs and ingest documents into the vector store
 
 ## 
 
