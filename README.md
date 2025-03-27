@@ -118,6 +118,7 @@ Ensure you have a text file (e.g., document.txt) containing the content you want
 
 ```bash
 python ingest.py --doc_file /path/to/document.txt --config config.yml
+```
 
 This script will:
 
@@ -125,6 +126,31 @@ This script will:
 -Split it into chunks using LangChain's RecursiveCharacterTextSplitter.
 -Add the chunks to your Chroma vector store.
 -Persist the vector store to disk.
+
+### Querying the Pipeline
+
+You can query the RAG pipeline using a command-line script or via the chatbot interface.
+
+```bash
+python query_script.py "Your sample query here"
+```
+This script will:
+-Load the RAG pipeline (including the GGUF model, retriever, and prompt template)
+-Send your query to the QA chain
+-Print the generated answer along with the processing time
+
+## Chatbot Interface
+Run the Streamlit app to interact with the pipeline using a web interface:
+```bash
+python -m streamlit run App.py
+```
+In the chatbot interface, you can:
+-Enter a question to receive an answer
+-Use the sidebar to upload PDFs and ingest documents into the vector store
+
+
+
+
 
 
 
