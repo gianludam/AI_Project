@@ -229,7 +229,8 @@ def build_rag_pipeline(config_path="config.yml"):
         n_batch=cfg.N_BATCH,
         max_tokens=cfg.MAX_TOKENS,
         temperature=cfg.TEMPERATURE,
-        top_p=cfg.TOP_P
+        top_p=cfg.TOP_P,
+        n_gpu_layers = cfg.N_GPU_LAYERS,
     )
 
     print("Loading QA chain...")
