@@ -7,11 +7,15 @@ import streamlit as st
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 
-from Applying_RAG import build_rag_pipeline
 from query_script import get_rag_response
 import timeit
 from htmlTemplates import css
 from ingest import ingest_documents
+
+@st.cache_resource(show_spinner="⌛ Loading model & vector‑store…")
+def get_qa_chain():
+    from Applying_RAG import build_rag_pipeline
+    return build_rag_pipeline() 
 
 
 def extract_text_from_pdf(pdf_docs: list[str]) -> str:
@@ -33,23 +37,16 @@ def extract_text_from_pdf(pdf_docs: list[str]) -> str:
 
 def handle_userinput(user_question: str) -> None:
     """
-    Processes user input and retrieves an answer using a RAG (Reader-Answer Generator) pipeline.
-    Args:
-        user_question: The user's question about the uploaded documents.
-
-    Returns:
-        None (modifies Streamlit app state with the answer and processing time).
+    Runs the cached RAG pipeline on the user question and streams the answer.
     """
+    qa_chain = get_qa_chain()            # ← comes from the cache above
 
     start = timeit.default_timer()
-
-    qa_chain = build_rag_pipeline()
     answer = get_rag_response(user_question, qa_chain)
-
-    end = timeit.default_timer()
+    end   = timeit.default_timer()
 
     st.write(answer)
-    st.markdown(f"**Time to retrieve answer:** {end - start:.2f} seconds", unsafe_allow_html=True)
+    st.markdown(f"**Time to retrieve answer:** {end - start:.2f} s")
 
 def main() -> None:
     """
