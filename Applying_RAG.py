@@ -6,10 +6,6 @@ import yaml
 import nltk
 nltk.download('punkt')
 
-from langchain.vectorstores import Chroma
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.prompts import PromptTemplate
-from langchain.chains import RetrievalQA
 from langchain.llms.base import LLM
 from llama_cpp import Llama
 
@@ -112,6 +108,7 @@ def load_embedding_model(model_name: str, device: str = "cpu", normalize: bool =
     Returns:
         HuggingFaceEmbeddings: The loaded embedding model.
     """
+    from langchain.embeddings import HuggingFaceEmbeddings
     return HuggingFaceEmbeddings(
         model_name=model_name,
         model_kwargs={"device": device},
@@ -135,6 +132,7 @@ def load_retriever(embedding_model, persist_directory, collection_name, vector_s
     Returns:
         Retriever: A retriever object for similarity search.
     """
+    from langchain.vectorstores import Chroma
     vectorstore = Chroma(
         persist_directory=persist_directory,
         collection_name=collection_name,
@@ -154,6 +152,7 @@ def load_prompt_template():
     Returns:
         PromptTemplate: The prompt template.
     """
+    from langchain.prompts import PromptTemplate
     template = """Use the following context to answer the question. 
 If you don't know the answer, say "I don't know."
 
@@ -178,6 +177,7 @@ def load_qa_chain(llm, retriever, prompt):
     Returns:
         RetrievalQA: The configured QA chain.
     """
+    from langchain.chains import RetrievalQA
     return RetrievalQA.from_chain_type(
         llm=llm,
         retriever=retriever,
