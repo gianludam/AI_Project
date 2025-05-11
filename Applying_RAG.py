@@ -10,9 +10,6 @@ from langchain.llms.base import LLM
 from llama_cpp import Llama
 
 from pydantic import PrivateAttr
-from langchain.llms.base import LLM
-from llama_cpp import Llama
-
 #########################################
 # Custom LLM class wrapping your GGUF model
 #########################################
