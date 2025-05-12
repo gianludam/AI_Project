@@ -164,7 +164,7 @@ AI_Project/
 ├── config.yml            # Configuration file with model, embedding, and vector store parameters
 ├── requirements.txt      # List of required Python packages
 ├── htmlTemplates.py      # Custom HTML/CSS templates for the Streamlit app
-├── READEME.md
+├── README.md
 └── LICENSE               # Apache License, Version 2.0
 ```
 
