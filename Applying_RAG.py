@@ -9,7 +9,7 @@ nltk.download('punkt')
 from langchain.llms.base import LLM
 from llama_cpp import Llama
 
-
+from embedding_cache import get_embedder
 
 from pydantic import PrivateAttr
 #########################################
@@ -203,10 +203,10 @@ def build_rag_pipeline(config_path="config.yml"):
         cfg = box.Box(yaml.safe_load(ymfile))
 
     print("Loading embedding model...")
-    embeddings = load_embedding_model(
-        model_name=cfg.EMBEDDINGS,
-        device=cfg.DEVICE,
-        normalize=cfg.NORMALIZE_EMBEDDINGS
+    embeddings = get_embedder(
+        cfg.EMBEDDINGS, 
+        cfg.DEVICE, 
+        cfg.NORMALIZE_EMBEDDINGS
     )
 
     print("Loading vector store and retriever...")
