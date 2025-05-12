@@ -11,11 +11,11 @@ from langchain.embeddings import HuggingFaceEmbeddings
 import functools
 
 @functools.lru_cache(maxsize=1)
-def get_embedder(cfg):
+def get_embedder(model_name: str, device: str, normalize: bool):
     return HuggingFaceEmbeddings(
-        model_name=cfg.EMBEDDINGS,
-        model_kwargs={"device": cfg.DEVICE},
-        encode_kwargs={"normalize_embeddings": cfg.NORMALIZE_EMBEDDINGS},
+        model_name=model_name,
+        model_kwargs={"device": device},
+        encode_kwargs={"normalize_embeddings": normalize},
     )
 
 def split_text(doc_text, chunk_size, chunk_overlap):
@@ -49,7 +49,7 @@ def ingest_documents(doc_text, cfg):
         cfg: Configuration object containing keys from config.yml.
     """
     # Load the embedding model using HuggingFaceEmbeddings
-    embeddings =  get_embedder(cfg) 
+    embeddings =  get_embedder(cfg.EMBEDDINGS, cfg.DEVICE, cfg.NORMALIZE_EMBEDDINGS) 
 
     # Initialize or load the Chroma vector store
     vectorstore = Chroma(
