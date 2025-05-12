@@ -10,13 +10,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings import HuggingFaceEmbeddings
 import functools
 
-@functools.lru_cache(maxsize=1)
-def get_embedder(model_name: str, device: str, normalize: bool):
-    return HuggingFaceEmbeddings(
-        model_name=model_name,
-        model_kwargs={"device": device},
-        encode_kwargs={"normalize_embeddings": normalize},
-    )
+from embedding_cache import get_embedder
 
 def split_text(doc_text, chunk_size, chunk_overlap):
     """
