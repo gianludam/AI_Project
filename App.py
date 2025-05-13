@@ -6,6 +6,10 @@ import PyPDF2
 import streamlit as st
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
+from pathlib import Path
+from typing import Iterable
+import io
+import pandas as pd
 
 from query_script import get_rag_response
 import timeit
@@ -17,23 +21,35 @@ def get_qa_chain():
     from Applying_RAG import build_rag_pipeline
     return build_rag_pipeline() 
 
+        
+def extract_text(file_paths: Iterable[Path]) -> str:
+    out = []
+    for fp in file_paths:
+        suffix = fp.suffix.lower()
+        try:
+            if suffix == ".pdf":
+                # … existing PDF code …
+            elif suffix in {".txt",".md",".csv",".json",".html",".htm"}:
+                # … existing plain‑text code …
+            elif suffix == ".docx":
+                # … existing DOCX code …
+            elif suffix == ".epub":
+                # … existing EPUB code …
+            elif suffix in {".png",".jpg",".jpeg"}:
+                # … existing OCR code …
+            # ─────────────────  NEW  ─────────────────
+            elif suffix in {".xlsx", ".xls"}:
+                df_dict = pd.read_excel(fp, sheet_name=None)
+                for sheet, df in df_dict.items():
+                    out.append(f"### Sheet: {sheet} — {len(df)} rows × {len(df.columns)} cols")
+                    out.extend(df.astype(str).fillna("").agg(" | ".join, axis=1))
+            # ─────────────────────────────────────────
+            else:
+                st.warning(f"Unsupported file skipped: {fp.name}")
+        except Exception as e:
+            st.warning(f"Could not extract {fp.name}: {e}")
+    return "\n".join(out)
 
-def extract_text_from_pdf(pdf_docs: list[str]) -> str:
-    """  
-    Extracts text content from a list of PDF documents.
-    Args:
-        pdf_docs: A list of file paths or data objects representing the PDF documents.
-    Returns:
-        A string containing the combined text content of all PDFs.
-    """
-    text = ''
-    for pdf in pdf_docs:
-        with open(pdf, "rb") as file:
-            reader = PyPDF2.PdfReader(file)
-            for page in reader.pages:
-                page_text = page.extract_text() or ""
-                text += page_text
-    return text 
 
 def handle_userinput(user_question: str) -> None:
     """
@@ -73,28 +89,33 @@ def main() -> None:
     if user_question:
         handle_userinput(user_question)
 
-    with st.sidebar:
-        st.subheader("Documents")
-        # Use st.file_uploader to allow multiple PDF uploads
-        pdf_docs = st.file_uploader("Upload your PDFs here and click on 'Ingest'", accept_multiple_files=True)
-        if st.button("Ingest"):
-            if pdf_docs:
-                with st.spinner("Processing"):
-                    # Save uploaded files temporarily and collect their paths
-                    temp_paths = []
-                    for pdf in pdf_docs:
-                        temp_path = f"/tmp/{pdf.name}"
-                        with open(temp_path, "wb") as f:
-                            f.write(pdf.getbuffer())
-                        temp_paths.append(temp_path)
-                    # Extract text from the PDF files
-                    raw_text = extract_text_from_pdf(temp_paths)
-                    # Ingest the extracted text into the vector store using the loaded configuration
-                    ingest_documents(raw_text, cfg)
-                    st.success("Ingestion complete!")
-            else:
-                st.warning("Please upload at least one PDF.")
+   with st.sidebar:
+    st.subheader("Documents & datasets")
 
+    docs = st.file_uploader(
+        "Upload files and click **Ingest**",
+        accept_multiple_files=True,
+        type=["pdf", "xlsx", "xls", "csv", "txt", "md"],
+    )
+
+    if st.button("Ingest"):
+        if docs:
+            with st.spinner("Processing"):
+                # a throw‑away folder that auto‑deletes afterwards
+                with TemporaryDirectory() as tmpdir:
+                    paths = []
+
+                    for up in docs:
+                        p = Path(tmpdir) / up.name
+                        p.write_bytes(up.getbuffer())
+                        paths.append(p)
+
+                    text = extract_text(paths)      # 🔹 NEW universal extractor
+                    ingest_documents(text, cfg)     # your existing splitter+embedder
+
+            st.success("✅ Ingestion complete!")
+        else:
+            st.warning("📂 Please upload at least one document.")
 
 if __name__ == '__main__':
     main()
