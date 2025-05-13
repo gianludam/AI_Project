@@ -1,53 +1,72 @@
+from __future__ import annotations
+from tempfile import TemporaryDirectory
+from typing import Iterable, List
+import timeit
 import box
-from box import Box
 import yaml
-import PyPDF2
 
 import streamlit as st
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 from pathlib import Path
-from typing import Iterable
 import io
 import pandas as pd
 
 from query_script import get_rag_response
-import timeit
 from htmlTemplates import css
 from ingest import ingest_documents
+
+@st.cache_data
+def load_cfg(path: str = "config.yml") -> Box:
+    """Parse YAML only once per session."""
+    with open(path, "r") as fh:
+        return box.Box(yaml.safe_load(fh))
 
 @st.cache_resource(show_spinner="⌛ Loading model & vector‑store…")
 def get_qa_chain():
     from Applying_RAG import build_rag_pipeline
     return build_rag_pipeline() 
 
-        
+
+
 def extract_text(file_paths: Iterable[Path]) -> str:
-    out = []
+    """
+    Turn any file into plain text
+    Return a single long string containing text from all files
+    """
+    out: list[str] = []
     for fp in file_paths:
         suffix = fp.suffix.lower()
         try:
             if suffix == ".pdf":
-                # … existing PDF code …
+               reader = PdfReader(fp)
+               for page in reader.pages:
+                   out.append(page.extract_text() or "")
+                   
             elif suffix in {".txt",".md",".csv",".json",".html",".htm"}:
-                # … existing plain‑text code …
-            elif suffix == ".docx":
-                # … existing DOCX code …
-            elif suffix == ".epub":
-                # … existing EPUB code …
-            elif suffix in {".png",".jpg",".jpeg"}:
-                # … existing OCR code …
-            # ─────────────────  NEW  ─────────────────
-            elif suffix in {".xlsx", ".xls"}:
-                df_dict = pd.read_excel(fp, sheet_name=None)
+                """
+                Plain text, markdown, CSV, JSON, HTML...
+                """
+                out.append(fp.read_text(errors="ignore"))
+                
+            elif suffix in {".xlsx", ".xls", ".xlsm"}:
+                """
+                Excel (all sheets)
+                """
+                df_dict = pd.read_excel(fp, sheet_name=None)  # sheet → DataFrame
                 for sheet, df in df_dict.items():
-                    out.append(f"### Sheet: {sheet} — {len(df)} rows × {len(df.columns)} cols")
+                    out.append(f"### Sheet: {sheet}  —  {len(df)} rows × {len(df.columns)} cols")
+                    # join each row into a pipe‑separated string
                     out.extend(df.astype(str).fillna("").agg(" | ".join, axis=1))
-            # ─────────────────────────────────────────
+                    out.append("")  # blank line separator
+
+            # ▸  unsupported
             else:
                 st.warning(f"Unsupported file skipped: {fp.name}")
-        except Exception as e:
-            st.warning(f"Could not extract {fp.name}: {e}")
+
+        except Exception as exc:
+            st.warning(f"Could not extract {fp.name}: {exc}")
+
     return "\n".join(out)
 
 
@@ -72,50 +91,52 @@ def main() -> None:
     handles user interaction, and processes PDFs.
     """
     load_dotenv()
-    st.set_page_config(page_title="Chat with PDFs", page_icon=":books:")
+    st.set_page_config(page_title="Chat with Documents", page_icon=":books:")
     st.write(css, unsafe_allow_html=True)  # Apply CSS styles
 
-    # Load configuration for ingestion (assuming config.yml is in the same directory)
-    with open("config.yml", "r") as f:
-        cfg = box.Box(yaml.safe_load(f))
+    # Load configuration for ingestion
+    cfg = load_cfg()
 
     if "conversation" not in st.session_state:
         st.session_state.conversation = None
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = None
 
-    st.header("Chat with PDFs :books:")
+    st.header("Chat with Documents :books:")
     user_question = st.text_input("Ask a question:")
     if user_question:
         handle_userinput(user_question)
 
-   with st.sidebar:
-    st.subheader("Documents & datasets")
+    with st.sidebar:
+        st.subheader("Documents & datasets")
 
-    docs = st.file_uploader(
-        "Upload files and click **Ingest**",
-        accept_multiple_files=True,
-        type=["pdf", "xlsx", "xls", "csv", "txt", "md"],
-    )
+        uploads = st.file_uploader(
+            "Upload files then click **Ingest**",
+            accept_multiple_files=True,
+            type=[
+                "pdf", "txt", "md", "csv", "json", "html", "htm",
+                "xlsx", "xls", "xlsm",
+            ],
+        )
 
-    if st.button("Ingest"):
-        if docs:
-            with st.spinner("Processing"):
-                # a throw‑away folder that auto‑deletes afterwards
+        if st.button("Ingest"):
+            if not uploads:
+                st.warning("📂 Please upload at least one document.")
+                st.stop()
+
+            with st.spinner("🔄 Extracting & indexing…"):
                 with TemporaryDirectory() as tmpdir:
-                    paths = []
-
-                    for up in docs:
-                        p = Path(tmpdir) / up.name
-                        p.write_bytes(up.getbuffer())
+                    paths: List[Path] = []
+                    for uf in uploads:
+                        p = Path(tmpdir) / uf.name
+                        p.write_bytes(uf.getbuffer())
                         paths.append(p)
 
-                    text = extract_text(paths)      # 🔹 NEW universal extractor
-                    ingest_documents(text, cfg)     # your existing splitter+embedder
+                    text_blob = extract_text(paths)
+                    ingest_documents(text_blob, cfg)
 
             st.success("✅ Ingestion complete!")
-        else:
-            st.warning("📂 Please upload at least one document.")
 
-if __name__ == '__main__':
+# ──────────────────────────── Run ───────────────────────────
+if __name__ == "__main__":
     main()
