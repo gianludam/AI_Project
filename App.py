@@ -19,7 +19,7 @@ from ingest import ingest_documents
 st.set_page_config(page_title="Chat with Documents", page_icon=":books:")
 
 @st.cache_data
-def load_cfg(path: str = "config.yml") -> Box:
+def load_cfg(path: str = "config.yml") -> box.Box:
     """Parse YAML only once per session."""
     with open(path, "r") as fh:
         return box.Box(yaml.safe_load(fh))
