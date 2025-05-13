@@ -16,7 +16,7 @@ from query_script import get_rag_response
 from htmlTemplates import css
 from ingest import ingest_documents
 
-st.markdown("### ✅ This is the updated version of App.py")
+st.set_page_config(page_title="Chat with Documents", page_icon=":books:")
 
 @st.cache_data
 def load_cfg(path: str = "config.yml") -> Box:
