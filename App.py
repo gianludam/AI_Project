@@ -93,7 +93,7 @@ def main() -> None:
     handles user interaction, and processes PDFs.
     """
     load_dotenv()
-    st.set_page_config(page_title="Chat with Documents", page_icon=":books:")
+    
     st.write(css, unsafe_allow_html=True)  # Apply CSS styles
 
     # Load configuration for ingestion
