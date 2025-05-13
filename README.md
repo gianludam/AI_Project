@@ -160,6 +160,7 @@ AI_Project/
 ├── Applying_RAG.py       # Contains the RAG pipeline code and custom GGUF LLM wrapper
 ├── App.py                # Streamlit app for the chatbot interface
 ├── ingest.py             # Script for ingesting document text into the vector store
+├── embedding_cache.py    
 ├── query_script.py       # Command-line script to query the RAG pipeline
 ├── config.yml            # Configuration file with model, embedding, and vector store parameters
 ├── requirements.txt      # List of required Python packages
