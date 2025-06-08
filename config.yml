@@ -21,5 +21,5 @@ VECTOR_DB: "vectorstore/sparrow"   # Directory where the vector store persists i
 COLLECTION_NAME: "pdf_chunks"       # Name of the collection for storing document chunks.
 VECTOR_SPACE: "cosine"              # Similarity metric (commonly "cosine").
 NUM_RESULTS: 3                      # Number of top results to retrieve for each query.
-CHUNK_SIZE: 100
-CHUNK_OVERLAP: 20
+CHUNK_SIZE: 512
+CHUNK_OVERLAP: 64
