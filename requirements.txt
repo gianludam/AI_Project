@@ -6,3 +6,4 @@ pypdf==4.1.0
 python-box
 streamlit==1.32.2
 pyPDF2
+openpyxl
