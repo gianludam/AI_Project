@@ -90,7 +90,7 @@ TEMPERATURE: 0.7
 TOP_P: 0.9
 
 # Embedding model configuration (from Hugging Face)
-EMBEDDINGS: "multi-qa-MiniLM-L6-cos-v1"
+EMBEDDINGS: "sentence-transformers/all-mpnet-base-v2"
 DEVICE: "cpu"
 NORMALIZE_EMBEDDINGS: true
 
@@ -101,8 +101,8 @@ VECTOR_SPACE: "cosine"
 NUM_RESULTS: 3
 
 # Chunking parameters for document ingestion
-CHUNK_SIZE: 100
-CHUNK_OVERLAP: 20
+CHUNK_SIZE: 512
+CHUNK_OVERLAP: 64
 ```
 
 
