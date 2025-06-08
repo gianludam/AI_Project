@@ -12,7 +12,7 @@ TOP_P: 0.9          # Controls nucleus sampling cutoff.
 N_GPU_LAYERS:  32       # –1 = "all", 0 = CPU‑only; 32 fits a 7‑B Q2_K on 8 GB RAM
 
 # Embedding model configuration.
-EMBEDDINGS: "multi-qa-MiniLM-L6-cos-v1" # The name of the embedding model
+EMBEDDINGS: "sentence-transformers/all-mpnet-base-v2" # The name of the embedding model
 DEVICE: "cpu"                # Device for inference; use "cuda" if you have a GPU.
 NORMALIZE_EMBEDDINGS: true    # Whether to normalize embeddings to unit length.
 
