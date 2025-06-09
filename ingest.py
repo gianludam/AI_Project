@@ -12,27 +12,36 @@ import functools
 
 from embedding_cache import get_embedder
 
-def split_text(doc_text, chunk_size, chunk_overlap):
+def split_text(doc_text, chunk_size, chunk_overlap, source_name="uploaded_file"):
     """
-    Splits document text into manageable chunks using RecursiveCharacterTextSplitter.
-    
+    Splits a long document text into smaller overlapping chunks
+    and wraps each chunk in a LangChain Document object with metadata.
+
     Args:
-        doc_text (str): The document text to be split.
-        chunk_size (int): The target size (in characters) for each chunk.
+        doc_text (str): The full text content of the document to be split.
+        chunk_size (int): The maximum number of characters in each chunk.
         chunk_overlap (int): The number of characters to overlap between chunks.
-        
+        source_name (str): A label identifying the source of the text, 
+                           useful for debugging or displaying document provenance.
+
     Returns:
-        list[str]: A list of text chunks.
+        list[Document]: A list of LangChain Document objects, each containing:
+            - page_content (str): The text content of a chunk
+            - metadata (dict): Metadata including the 'source' name
     """
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=chunk_size,
         chunk_overlap=chunk_overlap
     )
-    splits = text_splitter.split_text(doc_text)
-    texts = text_splitter.create_documents(splits)
-    print(f"Loaded {len(texts)} splits")
-    # Each element in 'texts' is a Document object. We extract just the text.
-    return texts
+
+    # Directly create Document objects with metadata
+    documents = text_splitter.create_documents(
+        texts=[doc_text],
+        metadatas=[{"source": source_name}]
+    )
+
+    print(f"Loaded {len(documents)} chunks")
+    return documents
 
 def ingest_documents(doc_text, cfg):
     """
@@ -59,8 +68,8 @@ def ingest_documents(doc_text, cfg):
     print(f"Total chunks created: {len(chunks)}")
     
     # Add each chunk to the vector store with a unique ID
-    for i, chunk in enumerate(chunks):
-        vectorstore.add_documents([chunk], ids=[f"doc_{i}"])
+    vectorstore.add_documents(chunks)
+
     
     # Persist the vector store to disk
     vectorstore.persist()
