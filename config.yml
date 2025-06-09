@@ -5,7 +5,7 @@ GGUF_MODEL_PATH: "/Users/gianlucadamiani/Desktop/mistral-7b-instruct-v0.2.Q2_K.g
 N_CTX: 2048         # Context length (max tokens the model can process).
 N_BATCH: 256        # Batch size for model inference.
 MAX_TOKENS: 256     # Maximum tokens to generate in a response.
-TEMPERATURE: 0.7    # Controls randomness in generation (lower is more deterministic).
+TEMPERATURE: 0.0    # Controls randomness in generation (lower is more deterministic).
 TOP_P: 0.9          # Controls nucleus sampling cutoff.
 
 # How many layers to off‑load to Metal
