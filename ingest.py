@@ -5,9 +5,9 @@ import box
 import yaml
 import warnings
 
-from langchain.vectorstores import Chroma
+from langchain_community.vectorstores import Chroma
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 import functools
 
 from embedding_cache import get_embedder
