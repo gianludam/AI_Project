@@ -1,5 +1,5 @@
 import functools
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
 @functools.lru_cache(maxsize=1)
 def get_embedder(model_name: str, device: str, normalize: bool = True):
