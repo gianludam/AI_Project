@@ -146,18 +146,19 @@ def load_retriever(embedding_model, persist_directory, collection_name, vector_s
 #########################################
 def load_prompt_template():
     """
-    Load and return a prompt template for guiding the LLM.
-    
-    Returns:
-        PromptTemplate: The prompt template.
+    Return a robust prompt template that reduces hallucination and 
+    encourages grounded answers based only on retrieved context.
     """
     from langchain.prompts import PromptTemplate
-    template = """Use the following context to answer the question. 
-If you don't know the answer, say "I don't know."
+    template = """
+You are a helpful assistant. Use only the context below to answer the user's question.
+If the answer is not in the context, say "I don't know."
 
-Context: {context}
+<context>
+{context}
+</context>
+
 Question: {question}
-
 Answer:"""
     return PromptTemplate.from_template(template)
 
