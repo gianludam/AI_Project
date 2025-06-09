@@ -1,5 +1,6 @@
 langchain==0.1.12
 langchain-experimental==0.0.54
+langchain-community>=0.0.21   
 chromadb==0.4.24
 sentence_transformers==2.7.0
 pypdf==4.1.0
